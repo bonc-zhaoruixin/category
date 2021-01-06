@@ -1,7 +1,7 @@
 D:\软件\WorkSpace\category\src\main\java\com\bonc\entity\Category.java
 D:\软件\WorkSpace\category\src\main\java\com\bonc\category\util\DataBaseGenerator.java
 D:\软件\WorkSpace\category\src\main\java\com\bonc\service\CategoryService.java
+D:\软件\WorkSpace\category\src\main\java\com\bonc\CategoryApplication.java
 D:\软件\WorkSpace\category\src\main\java\com\bonc\controller\CategoryController.java
-D:\软件\WorkSpace\category\src\main\java\com\bonc\category\CategoryApplication.java
 D:\软件\WorkSpace\category\src\main\java\com\bonc\dao\CategoryMapper.java
 D:\软件\WorkSpace\category\src\main\java\com\bonc\service\impl\CategoryServiceImpl.java
