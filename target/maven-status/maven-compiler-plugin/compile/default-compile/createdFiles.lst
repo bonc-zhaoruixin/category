@@ -1,0 +1,9 @@
+com\bonc\controller\CategoryController.class
+com\bonc\category\util\DataBaseGenerator.class
+com\bonc\entity\Category.class
+com\bonc\service\impl\CategoryServiceImpl.class
+com\bonc\service\CategoryService.class
+com\bonc\category\util\DataBaseGenerator$1.class
+com\bonc\category\util\DataBaseGenerator$2.class
+com\bonc\category\CategoryApplication.class
+com\bonc\dao\CategoryMapper.class
