@@ -23,4 +23,146 @@
         category_id, category_name, category_code, category_parent_id, run_status, creator, create_time, delete_flag, remark, tree_level, creator_name, department_id
     </sql>
 
+    <!--添加类目-->
+    <insert id="insertCategory" parameterType="com.bonc.entity.Category">
+        insert into
+        category(category_name,category_code,category_parent_id,run_status,creator,
+        create_time,delete_flag,remark,tree_level,creator_name,department_id)
+        values
+        (#{categoryName},#{categoryCode},#{categoryParentId}
+        ,#{runStatus},#{creator},#{createTime},#{deleteFlag},#{remark}
+        ,#{treeLevel},#{creatorName},#{departmentId})
+    </insert>
+
+    <!--查询父类目code-->
+    <select id="selectParentCategoryCode" resultType="java.lang.String" parameterType="int">
+       select category_code from category where category_id=#{categoryParentId}
+    </select>
+
+    <!--查询父类目名称和数量-->
+    <resultMap id="selectPageMessage" type="com.bonc.vo.MenuNumber">
+        <result property="number" column="number"></result>
+        <result property="name" column="name"></result>
+    </resultMap>
+    <select id="selectParentCategoryTotal" resultMap="selectPageMessage" resultType="map">
+        <![CDATA[
+           select IFNULL(x.number,0) as number,cate.category_name as name from category cate
+           LEFT JOIN (
+             select
+             count(1) as number,(
+               select
+               m.category_name
+               from
+               category m
+               where
+               m.category_id = t.category_parent_id
+             )as NAME
+             from
+             category t
+             where
+             t.category_parent_id>0
+             and delete_flag=0
+             and department_id=#{departmentId}
+             GROUP BY
+             t.category_parent_id
+           )x
+           on x.NAME = cate.category_name
+           where category_id <= 5
+        ]]>
+    </select>
+
+    <!--通过id查询类目信息-->
+    <select id="selectCategoryById" parameterType="int" resultType="com.bonc.entity.Category">
+        SELECT
+        category_id,category_code,category_name,category_parent_id,run_status,creator,create_time,tree_level
+        FROM category
+        where category_id = #{categoryId}
+    </select>
+
+    <!--检查类目状态是否可以删除-->
+    <select id="checkCategoryStatusByCategoryName" parameterType="map" resultType="java.lang.String">
+       select
+       category_name
+       from
+       category
+       where
+       category_name = #{categoryName}
+       and
+       category_parent_id = #{categoryParentId}
+       and
+       delete_flag =0
+       and
+       department_id = #{departmentId}
+    </select>
+
+    <!--检查类目是否被使用-->
+    <select id="checkCategoryUseStatusByCategoryId" parameterType="string" resultType="java.lang.String">
+        SELECT 1
+        FROM
+        category_information
+        where
+        FIND_IN_SET(#{categoryId},category_topic_id)
+        or FIND_IN_SET(#{categoryId},category_organize_id)
+        or FIND_IN_SET(#{categoryId},category_project_id)
+        or FIND_IN_SET(#{categoryId},category_other_id)
+        LIMIT 1
+    </select>
+
+    <!--分页查询-->
+    <resultMap id="CategoryId" type="com.bonc.entity.Category">
+        <result property="categoryId" column="category_id"/>
+        <result property="categoryName" column="category_name"/>
+        <result property="categoryCode" column="category_code"/>
+        <result property="runStatus" column="run_status"/>
+        <result property="categoryParentId" column="category_parent_id"/>
+    </resultMap>
+    <select id="selectByPageCategory" resultType="java.lang.Object">
+            select
+            <if test="!pagination" >
+                category_id,category_parent_id,category_name,category_code,run_status
+            </if>
+            <if test="pagination">
+                count(1)
+            </if>
+            from category
+            <where>
+                <if test="categoryName != null and categoryName != ''">
+                    category_name like  "%"#{categoryName}"%"
+                </if>
+                <if test="categoryId != null ">
+                    and category_parent_id = #{categoryId}
+                </if>
+                and delete_flag = 0
+                and department_id = #{departmentId}
+            </where>
+    </select>
+
+    <!--修改类目信息-->
+    <update id="updateCategoryById">
+        update category
+        <set>
+            <if test="categoryName !=null and categoryName != ''">
+                category_name = #{categoryName},
+            </if>
+            <if test="runStatus != null">
+                run_status = #{runStatus}
+            </if>
+        </set>
+        where category_id = #{categoryId}
+    </update>
+
+    <!--修改类目状态-->
+    <update id="updateRunStatus" parameterType="map">
+        update category
+        set  run_status = #{runStatus}
+        where category_id=#{categoryId}
+    </update>
+
+    <!--删除类目-->
+    <update id="deleteCategoryById" parameterType="map">
+        update category
+        set  delete_flag = #{deleteFlag}
+        where category_id=#{categoryId}
+    </update>
+
 </mapper>

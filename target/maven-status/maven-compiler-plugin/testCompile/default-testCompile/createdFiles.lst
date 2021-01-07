@@ -1,1 +1,6 @@
+com\bonc\category\mapperTest\Insert.class
+com\bonc\category\mapperTest\Check.class
 com\bonc\category\CategoryApplicationTests.class
+com\bonc\category\mapperTest\Delete.class
+com\bonc\category\mapperTest\Update.class
+com\bonc\category\mapperTest\Select.class
